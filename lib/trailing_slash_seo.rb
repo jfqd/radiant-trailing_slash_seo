@@ -8,7 +8,9 @@ module TrailingSlashSeo
   
   module ClassMethods
     def process_with_redirect(request, response)
-      return response.redirect(self.url, 301) if !self.virtual? && request.path != self.url
+      if !self.virtual? && request.path != self.url && self.response_code == 200 && self.title.match(/robots.txt/).nil?
+        return response.redirect(self.url, 301)
+      end
       process_without_redirect(request, response)
     end
   end
